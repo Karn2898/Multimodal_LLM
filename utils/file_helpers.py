@@ -1,8 +1,3 @@
-"""
-utils/file_helpers.py – Save uploaded files to static storage and generate
-public URLs.
-"""
-
 from __future__ import annotations
 
 import os
@@ -24,23 +19,11 @@ async def save_upload_file(
     upload_file: UploadFile,
     sub_dir: str = "",
 ) -> dict:
-    """
-    Persist *upload_file* under ``static/uploads/<sub_dir>/`` with a
-    UUID-prefixed name and return a metadata dict compatible with
-    ``UploadResponse``.
-
-    Returns:
-        {
-            "filename": "<uuid>_<original_name>",
-            "url": "/static/uploads/<sub_dir>/<filename>",
-            "content_type": "...",
-            "size_bytes": ...,
-        }
-    """
+    
     dest_dir = _BASE_UPLOAD_DIR / sub_dir
     dest_dir.mkdir(parents=True, exist_ok=True)
 
-    original_name = upload_file.filename or "upload"
+    original_name = upload_file.filename 
     unique_name = f"{uuid.uuid4().hex}_{original_name}"
     dest_path = dest_dir / unique_name
 

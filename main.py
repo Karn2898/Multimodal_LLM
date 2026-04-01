@@ -1,6 +1,4 @@
-"""
-main.py – FastAPI application entrypoint for the Multimodal Gemini App.
-"""
+
 
 import uvicorn
 from fastapi import FastAPI
@@ -19,7 +17,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS middleware
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,10 +26,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files for uploaded content
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Register API v1 routes
 app.include_router(v1_router, prefix="/api/v1")
 
 

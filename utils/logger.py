@@ -1,13 +1,11 @@
-"""
-utils/logger.py – Centralised logging configuration.
-"""
+
 
 import logging
 import sys
 
 
 def get_logger(name: str, level: int = logging.INFO) -> logging.Logger:
-    """Return a named logger configured to write to stdout."""
+    
     logger = logging.getLogger(name)
     if not logger.handlers:
         handler = logging.StreamHandler(sys.stdout)

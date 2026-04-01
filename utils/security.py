@@ -1,10 +1,4 @@
-"""
-utils/security.py – Optional API-key authentication and rate limiting.
 
-Rate limiting is implemented with slowapi (a Starlette/FastAPI wrapper around
-the limits library).  Authentication is a simple bearer-token check against
-``settings.API_SECRET_KEY``; if the key is not configured the check is skipped.
-"""
 
 from __future__ import annotations
 
@@ -23,14 +17,9 @@ async def verify_api_key(
     request: Request,
     credentials: HTTPAuthorizationCredentials | None = Depends(_bearer_scheme),
 ) -> None:
-    """
-    FastAPI dependency that validates the ``Authorization: Bearer <key>``
-    header when ``API_SECRET_KEY`` is configured.
-
-    If ``API_SECRET_KEY`` is empty the check is skipped (development mode).
-    """
+  
     if not settings.API_SECRET_KEY:
-        return  # Auth disabled – skip
+        return  
 
     if credentials is None or credentials.credentials != settings.API_SECRET_KEY:
         logger.warning("Unauthorized request from %s", request.client)

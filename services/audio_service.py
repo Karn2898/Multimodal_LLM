@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import google.generativeai as genai
-
 from config.settings import settings
 from utils.logger import get_logger
 
@@ -19,7 +17,6 @@ ALLOWED_AUDIO_MIME_TYPES = {
     "audio/webm",
 }
 
-INLINE_THRESHOLD_BYTES = 4 * 1024 * 1024  # 4 MB
 MAX_BYTES = settings.MAX_AUDIO_SIZE_MB * 1024 * 1024
 
 
@@ -38,26 +35,6 @@ def prepare_audio_bytes(audio_bytes: bytes, mime_type: str = "audio/mp3") -> dic
     return {"mime_type": mime_type, "data": audio_bytes}
 
 
-def upload_audio_to_gemini(audio_bytes: bytes, mime_type: str = "audio/mp3") -> genai.types.File:
- 
-    import os
-    import tempfile
-
-    with tempfile.NamedTemporaryFile(suffix=".tmp", delete=False) as tmp:
-        tmp.write(audio_bytes)
-        tmp_path = tmp.name
-
-    try:
-        logger.debug("Uploading audio to Google File API (%d bytes).", len(audio_bytes))
-        uploaded = genai.upload_file(path=tmp_path, mime_type=mime_type)
-        logger.debug("Audio uploaded: %s", uploaded.name)
-        return uploaded
-    finally:
-        os.unlink(tmp_path)
-
-
 def get_audio_part(audio_bytes: bytes, mime_type: str = "audio/mp3"):
-    
-    if len(audio_bytes) <= INLINE_THRESHOLD_BYTES:
-        return prepare_audio_bytes(audio_bytes, mime_type)
-    return upload_audio_to_gemini(audio_bytes, mime_type)
+    """Return validated audio payload for Gemini request construction."""
+    return prepare_audio_bytes(audio_bytes, mime_type)
