@@ -1,10 +1,4 @@
-"""
-services/audio_service.py – Read, validate, and prepare audio files for Gemini.
 
-Gemini supports audio directly as inline data for short files; for large files
-the Google File API should be used.  This module provides a unified interface
-that chooses the right approach automatically.
-"""
 
 from __future__ import annotations
 
@@ -25,20 +19,12 @@ ALLOWED_AUDIO_MIME_TYPES = {
     "audio/webm",
 }
 
-# Files smaller than this threshold are sent as inline data; larger files use
-# the Google File API.
 INLINE_THRESHOLD_BYTES = 4 * 1024 * 1024  # 4 MB
 MAX_BYTES = settings.MAX_AUDIO_SIZE_MB * 1024 * 1024
 
 
 def prepare_audio_bytes(audio_bytes: bytes, mime_type: str = "audio/mp3") -> dict:
-    """
-    Validate audio bytes and return a Gemini inline blob dictionary.
 
-    Raises:
-        ValueError: If the audio exceeds the configured size limit or has an
-                    unsupported MIME type.
-    """
     if mime_type not in ALLOWED_AUDIO_MIME_TYPES:
         raise ValueError(
             f"Unsupported audio MIME type '{mime_type}'. "
@@ -53,11 +39,7 @@ def prepare_audio_bytes(audio_bytes: bytes, mime_type: str = "audio/mp3") -> dic
 
 
 def upload_audio_to_gemini(audio_bytes: bytes, mime_type: str = "audio/mp3") -> genai.types.File:
-    """
-    Upload audio to the Google File API and return the resulting File object.
-
-    Use this for audio larger than INLINE_THRESHOLD_BYTES.
-    """
+ 
     import os
     import tempfile
 
@@ -75,9 +57,7 @@ def upload_audio_to_gemini(audio_bytes: bytes, mime_type: str = "audio/mp3") -> 
 
 
 def get_audio_part(audio_bytes: bytes, mime_type: str = "audio/mp3"):
-    """
-    Return either an inline blob dict or a File object depending on size.
-    """
+    
     if len(audio_bytes) <= INLINE_THRESHOLD_BYTES:
         return prepare_audio_bytes(audio_bytes, mime_type)
     return upload_audio_to_gemini(audio_bytes, mime_type)
