@@ -7,15 +7,73 @@ import streamlit as st
 
 st.set_page_config(page_title="Multimodal Gemini", page_icon="AI", layout="wide")
 
-st.title("Multimodal Gemini Interface")
-st.caption("No HTML needed. This UI calls your FastAPI endpoints directly.")
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background: radial-gradient(circle at 15% 10%, #eef4ff 0%, #f7f9fc 38%, #ffffff 100%);
+    }
+    .block-container {
+        padding-top: 2rem;
+        max-width: 980px;
+    }
+    .app-shell {
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid #e6ebf2;
+        border-radius: 20px;
+        padding: 1rem 1.2rem 0.4rem 1.2rem;
+        margin-bottom: 1rem;
+    }
+    .app-title {
+        font-size: 1.45rem;
+        font-weight: 700;
+        color: #1f2a44;
+        margin: 0;
+        letter-spacing: -0.01em;
+    }
+    .app-subtitle {
+        color: #5f6b7e;
+        margin-top: 0.2rem;
+        margin-bottom: 0.1rem;
+    }
+    [data-testid="stChatMessage"] {
+        border: 1px solid #e9edf4;
+        border-radius: 16px;
+        background: #ffffff;
+        padding: 0.25rem 0.55rem;
+    }
+    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
+        background: #eef5ff;
+        border-color: #d9e6ff;
+    }
+    [data-testid="stSidebar"] {
+        border-right: 1px solid #ebeff6;
+        background: #fbfcff;
+    }
+    .stButton button {
+        border-radius: 999px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    """
+    <div class="app-shell">
+        <p class="app-title">Gemini Style Console</p>
+        <p class="app-subtitle">FastAPI backend with a lightweight Streamlit interface.</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 with st.sidebar:
-    st.header("Connection")
+    st.subheader("Connection")
     base_url = st.text_input("FastAPI URL", value="http://127.0.0.1:8000")
     api_secret_key = st.text_input("API Secret Key (optional)", type="password")
 
-    st.header("Mode")
+    st.subheader("Mode")
     mode = st.selectbox(
         "Choose mode",
         ["Text Chat", "Image URL + Text", "Image Upload + Text", "Audio Upload + Text"],
