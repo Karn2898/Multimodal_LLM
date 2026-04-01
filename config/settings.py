@@ -1,34 +1,35 @@
-"""
-config/settings.py – Application-wide configuration loaded from environment variables.
-"""
+"""Application settings loaded from environment variables."""
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+	"""Centralized runtime configuration."""
 
-    # Google Gemini
-    GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-1.5-pro"
-    GEMINI_TIMEOUT: int = 60
+	model_config = SettingsConfigDict(
+		env_file=".env",
+		env_file_encoding="utf-8",
+		case_sensitive=True,
+	)
 
-    # FastAPI / Uvicorn
-    APP_HOST: str = "0.0.0.0"
-    APP_PORT: int = 8000
-    APP_RELOAD: bool = True
+	GEMINI_API_KEY: str = Field(default="")
+	GEMINI_MODEL: str = Field(default="gemini-2.5-Flash")
+	GEMINI_TIMEOUT: int = Field(default=60)
 
-    # File uploads
-    MAX_IMAGE_SIZE_MB: int = 10
-    MAX_AUDIO_SIZE_MB: int = 25
-    UPLOAD_DIR: str = "static/uploads"
+	APP_HOST: str = Field(default="0.0.0.0")
+	APP_PORT: int = Field(default=8000)
+	APP_RELOAD: bool = Field(default=True)
 
-    # Rate limiting
-    RATE_LIMIT_REQUESTS: int = 100
-    RATE_LIMIT_WINDOW: int = 60
+	MAX_IMAGE_SIZE_MB: int = Field(default=10)
+	MAX_AUDIO_SIZE_MB: int = Field(default=25)
 
-    # Optional API auth
-    API_SECRET_KEY: str = ""
+	# Optional auth. If empty, auth checks are skipped.
+	API_SECRET_KEY: str = Field(default="")
+
+	# Used by utils/file_helpers.py
+	UPLOAD_DIR: str = Field(default="static/uploads")
 
 
 settings = Settings()
+
