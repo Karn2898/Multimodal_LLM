@@ -1,6 +1,4 @@
-"""
-api/v1/routes.py – Route definitions for /chat and /upload endpoints.
-"""
+
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, status
 
