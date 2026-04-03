@@ -26,12 +26,16 @@ class GeminiService:
 
     def __init__(self, model_name: str | None = None) -> None:
         selected_model = (model_name or settings.GEMINI_MODEL).strip()
-        self.model_name = (
-            selected_model
-            if selected_model.startswith("models/")
-            else f"models/{selected_model}"
-        )
+        self.model_name = self._normalize_model_name(selected_model)
         self._client = genai.Client(api_key=settings.GEMINI_API_KEY)
+
+    @staticmethod
+    def _normalize_model_name(raw_model_name: str) -> str:
+        """Normalize incoming model names to a lowercase Gemini model id."""
+        name = raw_model_name.strip()
+        if name.startswith("models/"):
+            name = name[len("models/") :]
+        return name.lower()
 
     async def _generate(self, contents: list) -> str:
         response = await self._client.aio.models.generate_content(

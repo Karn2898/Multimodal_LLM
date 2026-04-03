@@ -10,48 +10,207 @@ st.set_page_config(page_title="Multimodal Gemini", page_icon="AI", layout="wide"
 st.markdown(
     """
     <style>
-    .stApp {
-        background: radial-gradient(circle at 15% 10%, #eef4ff 0%, #f7f9fc 38%, #ffffff 100%);
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+
+    :root {
+        --bg-deep: #06131e;
+        --bg-mid: #0d2438;
+        --bg-soft: #113a57;
+        --card-bg: rgba(255, 255, 255, 0.88);
+        --card-border: rgba(255, 255, 255, 0.45);
+        --ink: #0f1f2c;
+        --muted: #42596d;
+        --teal: #1ec8a5;
+        --coral: #ff6f61;
+        --sun: #ffd166;
+        --sky: #58c9ff;
     }
+
+    * {
+        font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .stApp {
+        background:
+            radial-gradient(circle at 12% 18%, rgba(30, 200, 165, 0.25) 0%, rgba(30, 200, 165, 0) 40%),
+            radial-gradient(circle at 86% 12%, rgba(255, 111, 97, 0.3) 0%, rgba(255, 111, 97, 0) 35%),
+            radial-gradient(circle at 75% 78%, rgba(255, 209, 102, 0.22) 0%, rgba(255, 209, 102, 0) 42%),
+            linear-gradient(135deg, var(--bg-deep) 0%, var(--bg-mid) 50%, var(--bg-soft) 100%);
+        color: #f7fbff;
+    }
+
+    .stApp::before,
+    .stApp::after {
+        content: "";
+        position: fixed;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        filter: blur(12px);
+        z-index: -1;
+        opacity: 0.6;
+        pointer-events: none;
+        animation: drift 10s ease-in-out infinite;
+    }
+
+    .stApp::before {
+        top: -70px;
+        right: -90px;
+        background: radial-gradient(circle, rgba(88, 201, 255, 0.75) 0%, rgba(88, 201, 255, 0.08) 70%, transparent 100%);
+    }
+
+    .stApp::after {
+        bottom: -80px;
+        left: -80px;
+        background: radial-gradient(circle, rgba(255, 111, 97, 0.72) 0%, rgba(255, 111, 97, 0.1) 65%, transparent 100%);
+        animation-delay: 2s;
+    }
+
+    @keyframes drift {
+        0%, 100% { transform: translateY(0px) scale(1); }
+        50% { transform: translateY(-12px) scale(1.05); }
+    }
+
     .block-container {
-        padding-top: 2rem;
+        padding-top: 1.6rem;
         max-width: 980px;
     }
+
     .app-shell {
-        background: rgba(255, 255, 255, 0.82);
-        border: 1px solid #e6ebf2;
-        border-radius: 20px;
-        padding: 1rem 1.2rem 0.4rem 1.2rem;
+        background: linear-gradient(125deg, rgba(255,255,255,0.93) 0%, rgba(247, 254, 255, 0.88) 45%, rgba(245, 255, 251, 0.86) 100%);
+        border: 1px solid var(--card-border);
+        border-radius: 24px;
+        padding: 1.15rem 1.3rem 0.75rem 1.3rem;
         margin-bottom: 1rem;
+        box-shadow: 0 18px 40px rgba(0, 12, 28, 0.22);
     }
+
     .app-title {
-        font-size: 1.45rem;
-        font-weight: 700;
-        color: #1f2a44;
+        font-family: 'DM Serif Display', serif;
+        font-size: 2rem;
+        font-weight: 400;
+        color: var(--ink);
         margin: 0;
-        letter-spacing: -0.01em;
+        letter-spacing: 0.01em;
+        line-height: 1.05;
     }
+
     .app-subtitle {
-        color: #5f6b7e;
+        color: var(--muted);
         margin-top: 0.2rem;
         margin-bottom: 0.1rem;
+        font-weight: 500;
     }
-    [data-testid="stChatMessage"] {
-        border: 1px solid #e9edf4;
-        border-radius: 16px;
-        background: #ffffff;
-        padding: 0.25rem 0.55rem;
+
+    .color-row {
+        display: flex;
+        gap: 0.45rem;
+        margin: 0.7rem 0 0.25rem;
     }
-    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
-        background: #eef5ff;
-        border-color: #d9e6ff;
+
+    .pill {
+        width: 36px;
+        height: 10px;
+        border-radius: 999px;
     }
+
+    .p1 { background: var(--teal); }
+    .p2 { background: var(--sky); }
+    .p3 { background: var(--sun); }
+    .p4 { background: var(--coral); }
+
     [data-testid="stSidebar"] {
-        border-right: 1px solid #ebeff6;
-        background: #fbfcff;
+        border-right: 1px solid rgba(235, 248, 255, 0.2);
+        background: linear-gradient(180deg, rgba(4, 20, 33, 0.9) 0%, rgba(8, 36, 57, 0.88) 100%);
     }
+
+    [data-testid="stSidebar"] * {
+        color: #e8f6ff;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stTextInput"] input,
+    [data-testid="stSidebar"] [data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        color: #ffffff;
+    }
+
+    [data-testid="stChatMessage"] {
+        border: 1px solid rgba(255, 255, 255, 0.34);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 10px 22px rgba(8, 31, 48, 0.12);
+        padding: 0.3rem 0.6rem;
+    }
+
+    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
+        background: linear-gradient(125deg, rgba(88, 201, 255, 0.2) 0%, rgba(30, 200, 165, 0.18) 100%);
+        border-color: rgba(88, 201, 255, 0.35);
+    }
+
+    [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {
+        background: linear-gradient(125deg, rgba(255, 209, 102, 0.24) 0%, rgba(255, 111, 97, 0.14) 100%);
+        border-color: rgba(255, 111, 97, 0.28);
+    }
+
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"],
+    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] * {
+        color: #102a3d !important;
+    }
+
+    [data-testid="stChatMessage"] code {
+        background: rgba(16, 42, 61, 0.08);
+        color: #0d3550 !important;
+        border-radius: 6px;
+        padding: 0.08rem 0.3rem;
+    }
+
+    [data-testid="stChatMessage"] pre {
+        background: rgba(10, 37, 54, 0.9);
+        color: #eef8ff !important;
+        border-radius: 10px;
+    }
+
+    [data-testid="stChatMessage"] pre code {
+        background: transparent;
+        color: #eef8ff !important;
+        padding: 0;
+    }
+
+    .stChatInputContainer {
+        background: rgba(5, 24, 40, 0.55);
+        border: 1px solid rgba(233, 249, 255, 0.18);
+        backdrop-filter: blur(8px);
+        border-radius: 16px;
+        padding: 0.25rem;
+    }
+
     .stButton button {
         border-radius: 999px;
+        border: none;
+        padding: 0.5rem 1rem;
+        background: linear-gradient(90deg, var(--teal) 0%, var(--sky) 55%, var(--sun) 100%);
+        color: #05283e;
+        font-weight: 700;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stButton button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(88, 201, 255, 0.35);
+    }
+
+    [data-testid="stMarkdownContainer"] p {
+        color: #11324a;
+    }
+
+    @media (max-width: 900px) {
+        .app-title {
+            font-size: 1.6rem;
+        }
+        .block-container {
+            padding-top: 1.1rem;
+        }
     }
     </style>
     """,
@@ -61,8 +220,14 @@ st.markdown(
 st.markdown(
     """
     <div class="app-shell">
-        <p class="app-title">Gemini Style Console</p>
-        <p class="app-subtitle">FastAPI backend with a lightweight Streamlit interface.</p>
+        <p class="app-title">Aurora Multimodal Studio</p>
+        <p class="app-subtitle">Color-forward interface for text, image, and audio Gemini workflows.</p>
+        <div class="color-row">
+            <span class="pill p1"></span>
+            <span class="pill p2"></span>
+            <span class="pill p3"></span>
+            <span class="pill p4"></span>
+        </div>
     </div>
     """,
     unsafe_allow_html=True,
