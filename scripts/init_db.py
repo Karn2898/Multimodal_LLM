@@ -1,14 +1,3 @@
-"""
-scripts/init_db.py – Optional database initialisation for chat history.
-
-This script creates the necessary tables if you want to persist chat sessions.
-Run it once before starting the application:
-
-    python scripts/init_db.py
-
-The default implementation uses SQLite for simplicity; swap in your preferred
-database URL via the DATABASE_URL environment variable.
-"""
 
 from __future__ import annotations
 
