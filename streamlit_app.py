@@ -235,7 +235,7 @@ st.markdown(
 
 with st.sidebar:
     st.subheader("Connection")
-    base_url = st.text_input("FastAPI URL", value="http://127.0.0.1:8000")
+    base_url = st.text_input("FastAPI URL", value="https://multimodal-llm-api.onrender.com")
     api_secret_key = st.text_input("API Secret Key (optional)", type="password")
 
     st.subheader("Mode")
