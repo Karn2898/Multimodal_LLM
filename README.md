@@ -2,21 +2,8 @@
 
 A **FastAPI** service that exposes a clean REST API for multimodal (text, image, and audio) conversations powered by **Google Gemini**.
 
----
-POST /v1/chat
-     ↓
-api/v1/routes.py        ← receives form data (text + image + audio)
-     ↓
-services/orchestrator.py ← calls image_service + audio_service + gemini_service
-     ↓
-services/image_service.py ← reads image bytes + MIME type
-services/audio_service.py ← reads audio bytes + MIME type
-     ↓
-services/gemini_service.py ← sends image + audio + text to Gemini API
-     ↓
-api/v1/models.py          ← validates + formats ChatResponse
-     ↓
-User gets JSON response
+------------------------------------------------------------------------------
+
 
 ## Features
 
