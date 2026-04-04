@@ -29,6 +29,14 @@ class Settings(BaseSettings):
 
 	# Used by utils/file_helpers.py
 	UPLOAD_DIR: str = Field(default="static/uploads")
+	FILE_STORAGE_BACKEND: str = Field(default="auto")
+	APP_ENV: str = Field(default="development")
+
+	# Cloudinary configuration (used when backend is cloudinary or auto in production)
+	CLOUDINARY_CLOUD_NAME: str = Field(default="")
+	CLOUDINARY_API_KEY: str = Field(default="")
+	CLOUDINARY_API_SECRET: str = Field(default="")
+	CLOUDINARY_FOLDER: str = Field(default="multimodal_uploads")
 
 
 settings = Settings()
