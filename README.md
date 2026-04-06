@@ -22,13 +22,13 @@ After deployment, the public app is available at [https://auroraq.onrender.com/]
 
 ## Features
 
-- 💬 **Text chat** – multi-turn conversations via `/api/v1/chat`
-- 🖼️ **Image + text** – send an image URL or upload a file with a prompt
-- 🔊 **Audio + text** – upload an audio file and ask Gemini about it
-- 📁 **File upload** – store images and audio in static storage and get back a URL
-- 🔐 **Optional API-key auth** – bearer-token guard on every endpoint
-- 📈 **Rate limiting** – configurable via environment variables
-- 🗄️ **Optional chat history** – SQLite schema included (`scripts/init_db.py`)
+-  **Text chat** – multi-turn conversations via `/api/v1/chat`
+- **Image + text** – send an image URL or upload a file with a prompt
+-  **Audio + text** – upload an audio file and ask Gemini about it
+-  **File upload** – store images and audio in static storage and get back a URL
+-  **Optional API-key auth** – bearer-token guard on every endpoint
+-  **Rate limiting** – configurable via environment variables
+-  **Optional chat history** – SQLite schema included (`scripts/init_db.py`)
 
 ---
 
