@@ -18,7 +18,7 @@ This project is deployed on Render as a web service. The deployment flow is:
 3. Set the build command to install dependencies, for example `pip install -r requirements.txt`.
 4. Set the start command to launch the FastAPI app on Render's assigned port, for example `uvicorn main:app --host 0.0.0.0 --port $PORT`.
 5. Add the required environment variables in the Render dashboard, especially `GEMINI_API_KEY` and any optional settings you use locally.
-6. Deploy the service and wait for Render to finish the build and start the app.
+6. Deploy the service and wait for Render to finish the build and start the app. 
 
 After deployment, the public app is available at [https://auroraq.onrender.com/](https://auroraq.onrender.com/).
 
