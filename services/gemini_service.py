@@ -73,7 +73,7 @@ class GeminiService:
                     model=self.model_name,
                     contents=contents,
                 )
-                if not response.text:
+                if not response.text: 
                     raise ValueError("Gemini returned an empty response.")
                 return response.text
             except Exception as exc:
