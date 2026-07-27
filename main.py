@@ -2,8 +2,12 @@
 
 import uvicorn
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from slowapi.util import get_ipaddr
 
 from api.v1.routes import router as v1_router
 from config.settings import settings
@@ -11,11 +15,14 @@ from utils.logger import get_logger
 
 logger = get_logger(__name__)
 
+limiter = Limiter(key_func=get_ipaddr, default_limits=["10/minute"])
 app = FastAPI(
     title="Multimodal Gemini App",
     description="A FastAPI service for multimodal (text, image, audio) interactions via Google Gemini.",
     version="1.0.0",
 )
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 app.add_middleware(
@@ -26,6 +33,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(SlowAPIMiddleware)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
