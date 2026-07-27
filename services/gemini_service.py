@@ -1,8 +1,8 @@
 
-"""Gemini SDK wrapper for text, image, and audio interactions."""
-
 from __future__ import annotations
 
+import asyncio
+import logging
 from dataclasses import dataclass, field
 
 from google import genai
@@ -30,21 +30,66 @@ class GeminiService:
         self._client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
     @staticmethod
-    def _normalize_model_name(raw_model_name: str) -> str:
+    def _normalize_model_name(raw_model_name: str) :
         """Normalize incoming model names to a lowercase Gemini model id."""
         name = raw_model_name.strip()
         if name.startswith("models/"):
             name = name[len("models/") :]
         return name.lower()
 
-    async def _generate(self, contents: list) -> str:
-        response = await self._client.aio.models.generate_content(
-            model=self.model_name,
-            contents=contents,
-        )
-        if not response.text:
-            raise ValueError("Gemini returned an empty response.")
-        return response.text
+    @staticmethod
+    def _is_rate_limit_error(exc: BaseException) :
+       
+        name = type(exc).__name__
+        message = str(exc).lower()
+
+        if "429" in message or "too many requests" in message or "rate limit" in message:
+            return True
+
+        try:
+            from google.api_core import exceptions as google_exceptions
+
+            if isinstance(exc, google_exceptions.TooManyRequests):
+                return True
+        except ImportError:
+            pass
+
+        try:
+            import httpx
+
+            if isinstance(exc, httpx.HTTPStatusError) and exc.response.status_code == 429:
+                return True
+        except ImportError:
+            pass
+
+        return False
+
+    async def _generate(self, contents: list, max_retries: int = 3, base_delay: float = 1.0) -> str:
+        """Send contents to Gemini with retry + exponential backoff on rate limits."""
+        last_exc: BaseException | None = None
+        for attempt in range(max_retries):
+            try:
+                response = await self._client.aio.models.generate_content(
+                    model=self.model_name,
+                    contents=contents,
+                )
+                if not response.text:
+                    raise ValueError("Gemini returned an empty response.")
+                return response.text
+            except Exception as exc:
+                last_exc = exc
+                if self._is_rate_limit_error(exc) and attempt < max_retries - 1:
+                    delay = base_delay * (2 ** attempt)
+                    logger.warning(
+                        "Gemini rate-limit hit (attempt %d/%d). Retrying in %.1fs...",
+                        attempt + 1,
+                        max_retries,
+                        delay,
+                    )
+                    await asyncio.sleep(delay)
+                else:
+                    raise
+        raise last_exc  # type: ignore[misc]
 
     async def generate_text(self, prompt: str) -> str:
         """Send a plain-text prompt and return the generated text."""
