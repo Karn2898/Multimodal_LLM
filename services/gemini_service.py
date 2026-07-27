@@ -65,7 +65,7 @@ class GeminiService:
         return False
 
     async def _generate(self, contents: list, max_retries: int = 3, base_delay: float = 1.0) -> str:
-        """Send contents to Gemini with retry + exponential backoff on rate limits."""
+       
         last_exc: BaseException | None = None
         for attempt in range(max_retries):
             try:
