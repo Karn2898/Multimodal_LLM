@@ -2,6 +2,7 @@
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -40,10 +41,25 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(v1_router, prefix="/api/v1")
 
 
-@app.get("/", tags=["health"])
+@app.get("/", tags=["health"], response_class=HTMLResponse)
 async def root():
-    """Health-check endpoint."""
-    return {"status": "ok", "message": "Multimodal Gemini App is running."}
+    """Serve the homepage (HTML) with site-verification meta tag."""
+    return HTMLResponse(
+        content="""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="hmw-verify" content="83841620e612b1269d394bdc31dde463">
+    <title>Multimodal Gemini App</title>
+</head>
+<body>
+    <h1>Multimodal Gemini App</h1>
+    <p>Multimodal Gemini App is running.</p>
+</body>
+</html>""",
+        status_code=200,
+    )
 
 
 if __name__ == "__main__":
