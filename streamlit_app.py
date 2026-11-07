@@ -24,6 +24,8 @@ st.markdown(
         --coral: #ff6f61;
         --sun: #ffd166;
         --sky: #58c9ff;
+
+        "hmw-verify": "a0c559421256b1f0a963f7c5678a03ef",
     }
 
     * {
